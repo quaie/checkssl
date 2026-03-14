@@ -5,3 +5,6 @@ msnbc.com
 google.com
 inexistent-domain.org
 debian.org
+github.com
+gitlab.com
+quora.com
