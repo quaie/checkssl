@@ -4,7 +4,7 @@ set -euo pipefail
 DOMAINS_FILE="${DOMAINS_FILE:-domains.txt}"
 OUTPUT_FILE="${OUTPUT_FILE:-testssl-results.json}"
 SCAN_TIMEOUT="${SCAN_TIMEOUT:-120}"
-TESTSSL_PATH="${TESTSSL_PATH:-./testssl/testssl.sh}"
+TESTSSL_PATH="${TESTSSL_PATH:-./testssl-repo/testssl.sh}"
 
 echo "Scanning with $TESTSSL_PATH"
 
@@ -27,8 +27,7 @@ for DOMAIN in "${DOMAINS[@]}"; do
     --jsonfile "$TEMP_JSON" \
     --quiet \
     --warnings off \
-    --file-descriptors 1 \
-    "$DOMAIN"; then
+    "$DOMAIN"; then  # <-- Removed --file-descriptors
     
     DOMAIN_CLEAN=$(echo "$DOMAIN" | sed 's/:443$//')
     IP=$(jq -r '.ip // "unknown"' "$TEMP_JSON" 2>/dev/null || echo "unknown")

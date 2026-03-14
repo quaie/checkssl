@@ -38,4 +38,4 @@ runs:
         DOMAINS_FILE: ${{ inputs.domains-file }}
         OUTPUT_FILE: ${{ inputs.output-file }}
         SCAN_TIMEOUT: ${{ inputs.scan-timeout }}
-        TESTSSL_PATH: ./testssl-repo/testssl.sh
+        TESTSSL_PATH: ./testssl-repo/testssl.sh  # <-- Explicit path
