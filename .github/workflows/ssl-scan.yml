@@ -23,6 +23,15 @@ jobs:
         domains-file: domains.txt
         output-file: testssl-results.json
 
+
+    - name: Debug raw testssl output
+      run: |
+        echo "Domains:"
+        cat domains.txt
+        echo "Trying single domain manually:"
+        head -1 domains.txt | xargs -I {} ./testssl.sh {} || echo "testssl.sh error"
+
+
     - name: Debug - Verify file exists and contents
       if: always()
       run: |

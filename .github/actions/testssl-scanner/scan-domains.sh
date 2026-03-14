@@ -21,8 +21,8 @@ for DOMAIN in "${DOMAINS[@]}"; do
 
   echo "Scanning $DOMAIN..."
   TEMP_JSON=$(mktemp)
-  
-  if timeout "${SCAN_TIMEOUT}"s ./testssl.sh --jsonfile "$TEMP_JSON" --quiet --warnings off "$DOMAIN" >/dev/null 2>&1; then
+
+  if timeout "${SCAN_TIMEOUT}"s ./testssl.sh --jsonfile "$TEMP_JSON" --quiet --warnings off "$DOMAIN"; then
     DOMAIN_CLEAN=$(echo "$DOMAIN" | sed 's/:443$//')
     IP=$(jq -r '.ip // "unknown"' "$TEMP_JSON" 2>/dev/null || echo "unknown")
     GRADE=$(jq -r '.grade.overall // "unknown"' "$TEMP_JSON" 2>/dev/null || echo "unknown")
@@ -35,17 +35,16 @@ for DOMAIN in "${DOMAINS[@]}"; do
       \"cipher_types\": \"${CIPHERS}\"
     }")
   else
-    RESULTS+=("{
-      \"domain\": \"${DOMAIN}\",
-      \"ip_addresses\": \"timeout\",
-      \"grade\": \"scan_failed\",
-      \"cipher_types\": \"\"
-    }")
+    echo "Scan failed for $DOMAIN"
   fi
 
   rm -f "$TEMP_JSON"
 done
 
-# Write JSON array to workspace root
-printf '%s\n' "${RESULTS[@]}" | jq -s . > "../$OUTPUT_FILE"
-echo "✅ Saved $(jq 'length' "../$OUTPUT_FILE") results to $OUTPUT_FILE"
+if [[ ${#RESULTS[@]} -eq 0 ]]; then
+  echo "Error: no scan results were produced. Check testssl.sh output or domains.txt."
+  exit 1
+fi
+
+printf '%s\n' "${RESULTS[@]}" | jq -s . > "$OUTPUT_FILE"
+echo "Saved $(jq 'length' "$OUTPUT_FILE") results to $OUTPUT_FILE"
