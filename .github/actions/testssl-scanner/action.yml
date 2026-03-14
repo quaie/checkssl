@@ -1,41 +1,9 @@
-name: 'TestSSL Domains Scanner'
-description: 'Scans domains from file with testssl.sh (full repo), saves JSON array'
+# ... prior content ...
 inputs:
   domains-file:
-    description: 'Path to domains file (repo root)'
-    required: true
+    description: 'Domains file path'
     default: 'domains.txt'
-  output-file:
-    description: 'Output JSON file path (repo root)'
-    required: true
-    default: 'testssl-results.json'
-  scan-timeout:
-    description: 'Timeout per domain (seconds)'
-    required: false
-    default: '120'
-runs:
-  using: 'composite'
-  steps:
-    - name: Install dependencies
-      shell: bash
-      run: sudo apt-get update && sudo apt-get install -y jq git
-
-    - name: Download full testssl.sh repo
-      shell: bash
-      working-directory: ${{ github.workspace }}
-      run: |
-        git clone --depth 1 --single-branch --branch 3.2 https://github.com/testssl/testssl.sh.git testssl-repo
-        cd testssl-repo
-        chmod +x testssl.sh
-
-    - name: Run scan script
-      shell: bash
-      working-directory: ${{ github.workspace }}
-      run: |
-        chmod +x "${{ github.action_path }}/scan-domains.sh"
-        "${{ github.action_path }}/scan-domains.sh"
-      env:
-        DOMAINS_FILE: ${{ inputs.domains-file }}
-        OUTPUT_FILE: ${{ inputs.output-file }}
-        SCAN_TIMEOUT: ${{ inputs.scan-timeout }}
-        TESTSSL_PATH: ./testssl-repo/testssl.sh  # <-- Explicit path
+# In run step:
+run: |
+  python ${{ github.action_path }}/testssl.py --domains "${{ inputs.domains-file }}" --json > sslyze-results.json
+# ...
