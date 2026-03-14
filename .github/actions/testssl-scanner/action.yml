@@ -1,5 +1,5 @@
 name: 'TestSSL Domains Scanner'
-description: 'Scans domains from domains.txt with testssl.sh, extracts key metrics, saves as JSON array'
+description: 'Scans domains from file with testssl.sh, extracts metrics, saves JSON array'
 inputs:
   domains-file:
     description: 'Path to domains file'
@@ -16,6 +16,10 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Install jq (JSON processor)
+      shell: bash
+      run: sudo apt-get update && sudo apt-get install -y jq
+
     - name: Download testssl.sh
       shell: bash
       run: |
@@ -25,8 +29,10 @@ runs:
     - name: Scan domains and generate JSON
       shell: bash
       run: |
-        chmod +x "${{ github.action_path }}/scan-domains.sh"
-        "${{ github.action_path }}/scan-domains.sh" \
-          --domains "${{ inputs.domains-file }}" \
-          --output "${{ inputs.output-file }}" \
-          --timeout "${{ inputs.scan-timeout }}"
+        cd ${{ github.action_path }}
+        chmod +x scan-domains.sh
+        ./scan-domains.sh
+      env:
+        DOMAINS_FILE: ${{ inputs.domains-file }}
+        OUTPUT_FILE: ${{ inputs.output-file }}
+        SCAN_TIMEOUT: ${{ inputs.scan-timeout }}
