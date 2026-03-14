@@ -33,12 +33,17 @@ jobs:
     
     - name: Run scan
       run: |
-        python testssl.py --domains domains.txt --json > domains-scan.json
+        ls -la testssl.py domains.txt  # Verify files
+        python3 testssl.py --domains domains.txt --json > domains-scan.json
         
     - name: Show results preview
       run: |
         echo "Scan complete. First result:"
         head -n 10 domains-scan.json
+
+    - name: Validate output
+      run: |
+        jq . domains-scan.json || cat domains-scan.json        
         
     - name: Upload JSON results
       if: always()
