@@ -1,14 +1,8 @@
 [
   {
     "domain": "reddit.com",
-    "ip_addresses": "timeout",
-    "tls_versions_supported": "failed",
-    "list_of_ciphers": ""
-  },
-  {
-    "domain": "cnn.com",
-    "ip_addresses": "timeout",
-    "tls_versions_supported": "failed",
+    "ip_addresses": "",
+    "tls_versions_supported": "",
     "list_of_ciphers": ""
   }
 ]
