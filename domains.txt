@@ -8,3 +8,4 @@ debian.org
 github.com
 gitlab.com
 quora.com
+en.wikipedia.org
